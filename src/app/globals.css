@@ -22,8 +22,8 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-weight: 500;
-    font-optical-sizing: auto;
+    font-weight: 800; /* Lenskart headings: Plus Jakarta Sans 800 in brand blue */
+    color: var(--c-ink);
     text-wrap: balance;
   }
   p { text-wrap: pretty; }
@@ -47,6 +47,9 @@
 }
 
 @layer components {
+  /* Titles that aren't headings (tile and card titles) use the brand's bold weight too */
+  .font-display:not(h1, h2, h3, h4) { font-weight: 700; }
+
   /* Page container on the 4 / 8 / 12 column grid */
   .page {
     width: 100%;
@@ -201,3 +204,6 @@
   animation-duration: 480ms;
   animation-timing-function: var(--ease-settle);
 }
+
+/* "Show UX changes" off: hidden before first paint, so markers never flash */
+html[data-ux="off"] .ux-marker { display: none !important; }

@@ -113,4 +113,18 @@ test.describe("Accessibility (X10)", () => {
     }
     await ctx.close();
   });
+
+  // Common laptop widths, including 1280 px where the desktop navigation first appears
+  // (the header once overflowed there by 12 px after the brand font change).
+  test("Laptop widths: no horizontal scrolling", async ({ browser }) => {
+    for (const w of [1280, 1366, 1536, 1920]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: 800 } });
+      const page = await ctx.newPage();
+      for (const path of REFLOW_PAGES) {
+        await page.goto(path);
+        expect(await overflowOf(page), `${path} at ${w}px`).toBeLessThanOrEqual(1);
+      }
+      await ctx.close();
+    }
+  });
 });

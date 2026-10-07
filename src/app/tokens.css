@@ -1,44 +1,52 @@
 /*
- * Clear Path design tokens. Documented in docs/design-system.md.
- * Contrast (checked numerically, see docs/design-system.md):
- *   ink on paper 15.1:1 · muted on paper 6.2:1 · accent on paper 5.6:1
- *   signal on paper 5.1:1 · line-strong on paper 3.6:1 (UI boundaries)
+ * Design tokens. Documented in docs/design-system.md.
+ * Brand: Lenskart blue #000042 measured from lenskart.com (computed colour of its
+ * headings, nav text and primary surfaces), typeface Plus Jakarta Sans, white page,
+ * square corners.
+ * Contrast (checked numerically): brand blue on white 19.5:1 · muted on white 7.2:1 ·
+ * white on brand 19.5:1 · line-strong on white 3.4:1 (UI boundaries).
  */
 :root {
-  /* Colour: surfaces */
-  --c-paper: #f4f1e8; /* page background, warm optician's paper */
-  --c-surface: #fffefb; /* raised surfaces: cards, inputs, sheets */
-  --c-sunk: #eae5d8; /* recessed areas: wells, skeletons, table stripes */
+  /* Colour: surfaces (white page, as on lenskart.com) */
+  --c-paper: #ffffff;
+  --c-surface: #ffffff;
+  --c-sunk: #f5f5f8; /* tiles, wells, skeletons (measured on lenskart.com) */
 
-  /* Colour: content */
-  --c-ink: #0f1d2b; /* primary text, primary buttons */
-  --c-ink-2: #1d2f40; /* hover state of ink surfaces */
-  --c-muted: #4f5b67; /* secondary text */
-  --c-line: #d9d2c2; /* decorative hairlines (not relied on for meaning) */
-  --c-line-strong: #857d6c; /* input and control boundaries (3:1 on paper) */
+  /* Colour: content. Headings, key text and dividers use the brand blue. */
+  --c-brand: #000042; /* Lenskart blue */
+  --c-ink: #000042;
+  --c-ink-2: #1f1f66; /* hover state of brand-blue surfaces */
+  --c-muted: #545478; /* secondary text, blue-grey */
+  --c-line: #e9e9e9; /* decorative hairlines (measured on lenskart.com) */
+  --c-line-strong: #8a8aa3; /* input and control boundaries (3:1 on white) */
 
-  /* Colour: brand and semantic */
-  --c-accent: #0b6b63; /* lens teal: links, selected states, primary accents */
-  --c-accent-ink: #ffffff; /* text on accent */
-  --c-accent-soft: #d5ebe7; /* selected backgrounds */
-  --c-signal: #b83a1a; /* vermilion: small active marks, counts */
-  --c-highlight: #f5df6e; /* lensmeter yellow: changed-value highlight (background only) */
+  /* Colour: brand accents and semantic */
+  --c-accent: #000042; /* links, nav hover/active, icons, tags, selected states */
+  --c-accent-ink: #ffffff; /* text on brand blue */
+  --c-accent-soft: #e8e8f3; /* selected backgrounds */
+  --c-signal: #b83a1a; /* small count badges */
+  --c-highlight: #dfe2ff; /* price-change highlight (light brand blue, background only) */
   --c-success: #1b7340;
   --c-success-soft: #dcefe2;
   --c-warning: #8a5300;
   --c-warning-soft: #f7ead0;
   --c-danger: #b42318;
   --c-danger-soft: #f9e0dc;
-  --c-focus: #0f1d2b; /* focus ring on light surfaces (15:1) */
+  --c-focus: #000042; /* focus ring on light surfaces (19.5:1) */
 
-  /* Typography (font families are injected by next/font as --font-*-src) */
-  --font-display: var(--font-display-src), "Georgia", serif;
-  --font-text: var(--font-text-src), system-ui, sans-serif;
-  --font-mono: var(--font-mono-src), ui-monospace, monospace;
+  /* Annotation colour for "What changed" markers. Deliberately NOT the brand blue,
+     so markers read as review notes, not as part of the product design. */
+  --c-note: #c2185b; /* white text on it 5.9:1 */
+  --c-note-soft: #fce4ec;
+
+  /* Typography: one brand family (next/font injects --font-brand-src) */
+  --font-display: var(--font-brand-src), system-ui, sans-serif;
+  --font-text: var(--font-brand-src), system-ui, sans-serif;
+  --font-mono: var(--font-brand-src), system-ui, sans-serif; /* numbers use tabular figures */
 
   /* Radii: rectilinear by default; roundness signals "lens-like" things */
-  --r-xs: 2px; /* inputs, buttons */
-  --r-sm: 6px; /* chips' inner marks, small tags */
+  --r-xs: 0px; /* inputs, buttons: square, as on lenskart.com */
+  --r-sm: 0px; /* small tags */
   --r-md: 14px; /* sheets and drawers (top corners only) */
   --r-lens: 999px; /* pills, rings, lens slots */
 
@@ -82,18 +90,19 @@
 
 /* Dark ink sections (footer, hero band) redefine the tokens they use */
 .theme-ink {
-  --c-paper: #0f1d2b;
-  --c-surface: #172a3c;
-  --c-sunk: #0a1520;
-  --c-ink: #f4f1e8;
+  /* Brand-blue bands (footer, eye-test band) */
+  --c-paper: #000042;
+  --c-surface: #0d0d55;
+  --c-sunk: #00002e;
+  --c-ink: #ffffff;
   --c-ink-2: #ffffff;
-  --c-muted: #a9b4bf;
-  --c-line: #2c4054;
-  --c-line-strong: #6f8193;
-  --c-accent: #5fc4b8;
-  --c-accent-ink: #0f1d2b;
-  --c-accent-soft: #163c3d;
-  --c-focus: #f5df6e;
+  --c-muted: #b9b9da; /* 10.2:1 */
+  --c-line: #26266b;
+  --c-line-strong: #7c7cb0;
+  --c-accent: #a9b1ff; /* 9.7:1 */
+  --c-accent-ink: #000042;
+  --c-accent-soft: #1a1a63;
+  --c-focus: #f5df6e; /* 14.5:1 */
   background: var(--c-paper);
   color: var(--c-ink);
 }

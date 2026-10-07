@@ -11,6 +11,7 @@ import { NEED_ICON, NEED_MENU, needHref } from "@/lib/nav";
 import { IconButton } from "../ui/Button";
 import { Drawer } from "../ui/Drawer";
 import { ShapeGlyph } from "../frames/ShapeGlyph";
+import { UxMarker } from "../ux/UxMarker";
 
 type MenuId = "need" | "shape" | null;
 
@@ -81,15 +82,18 @@ export function Header() {
   const withNeed = (href: string) => (need && need !== "contacts" && href.startsWith("/shop") ? `${href}${href.includes("?") ? "&" : "?"}need=${need}` : href);
 
   const navItem =
-    "relative flex h-full items-center gap-1 whitespace-nowrap px-3 text-[0.9375rem] font-semibold text-ink transition-colors duration-micro hover:text-accent " +
-    "after:absolute after:inset-x-3 after:bottom-[18px] after:h-[2px] after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-ui after:ease-settle hover:after:scale-x-100 aria-[current=page]:after:scale-x-100 aria-expanded:after:scale-x-100";
+    "relative flex h-full items-center gap-1 whitespace-nowrap px-2.5 2xl:px-3 text-[0.9375rem] font-semibold text-ink transition-colors duration-micro hover:text-accent " +
+    "after:absolute after:inset-x-2.5 2xl:after:inset-x-3 after:bottom-[18px] after:h-[2px] after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-ui after:ease-settle hover:after:scale-x-100 aria-[current=page]:after:scale-x-100 aria-expanded:after:scale-x-100";
 
   return (
     <header ref={headerRef} className="sticky top-0 z-header border-b border-ink bg-paper" onMouseLeave={hoverClose}>
       <div className="page flex h-[var(--header-h)] items-center gap-4">
         {/* Mobile: menu button */}
         <IconButton icon="menu" label="Open menu" data-menu-button className="-ml-2 xl:hidden" onClick={() => setMobileOpen(true)} aria-haspopup="dialog" />
-        <Wordmark />
+        <div className="relative">
+          <Wordmark />
+          <UxMarker id="home-header" />
+        </div>
 
         {/* Desktop navigation: shopping only, plus Stores and Help (U1) */}
         <nav aria-label="Main" data-desktop-nav className="ml-2 hidden h-full xl:block">
@@ -104,8 +108,9 @@ export function Header() {
                 Frames by shape <Icon name="chevron-down" size={16} className={`transition-transform duration-ui ${menu === "shape" ? "rotate-180" : ""}`} />
               </button>
             </li>
-            <li className="h-full" onMouseEnter={() => hoverOpen(null)}>
+            <li className="relative h-full" onMouseEnter={() => hoverOpen(null)}>
               <Link href="/finder" className={navItem} aria-current={pathname === "/finder" ? "page" : undefined}>Find my frame</Link>
+              <UxMarker id="home-nav-help" className="!top-0.5" />
             </li>
             <li className="h-full" onMouseEnter={() => hoverOpen(null)}>
               <Link href="/stores" className={navItem} aria-current={pathname === "/stores" ? "page" : undefined}>Eye test &amp; stores</Link>

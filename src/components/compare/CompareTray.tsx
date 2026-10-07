@@ -79,7 +79,7 @@ export function CompareTray() {
                 aria-disabled={!canCompare}
                 onClick={(e) => !canCompare && e.preventDefault()}
                 className={`inline-flex min-h-[44px] items-center gap-2 px-4 font-semibold transition-[transform,box-shadow] duration-micro ${
-                  canCompare ? "bg-ink text-paper hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lift-sm" : "cursor-not-allowed bg-line text-muted"
+                  canCompare ? "bg-ink text-paper hover:bg-ink-2" : "cursor-not-allowed bg-line text-muted"
                 }`}
               >
                 Compare <Icon name="arrow-right" size={18} />

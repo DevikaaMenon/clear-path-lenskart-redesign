@@ -20,6 +20,8 @@ const csp = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The three photos are served as AVIF/WebP at the size each layout needs.
+  images: { formats: ["image/avif", "image/webp"], qualities: [70] },
   async headers() {
     return [
       {

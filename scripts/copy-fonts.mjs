@@ -8,6 +8,9 @@ const out = join(root, "src", "app", "fonts");
 mkdirSync(out, { recursive: true });
 
 const files = [
+  // Brand typeface, as used on lenskart.com (SIL OFL)
+  ["@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2", "jakarta-var.woff2"],
+  ["@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-italic.woff2", "jakarta-var-italic.woff2"],
   ["@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2", "fraunces-var.woff2"],
   ["@fontsource-variable/fraunces/files/fraunces-latin-full-italic.woff2", "fraunces-var-italic.woff2"],
   ["@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-400-normal.woff2", "atkinson-400.woff2"],

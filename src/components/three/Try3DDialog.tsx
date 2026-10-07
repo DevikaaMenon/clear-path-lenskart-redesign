@@ -29,7 +29,7 @@ export function Try3DDialog({ product, colourIndex, need, onClose }: { product: 
           <p className="num text-lg font-bold">{formatINR(product.basePrice)} <span className="font-sans text-sm font-normal text-muted">frame</span></p>
           <Link
             href={`/frames/${product.slug}${need && product.needs.includes(need) ? `?need=${need}` : ""}`}
-            className="inline-flex min-h-[48px] items-center gap-2 bg-ink px-5 font-semibold text-paper transition-[transform,box-shadow] duration-micro hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lift-sm"
+            className="inline-flex min-h-[48px] items-center gap-2 bg-ink px-5 font-semibold text-paper transition-[transform,box-shadow] duration-micro hover:bg-ink-2"
           >
             See details and lenses for {product.name}
           </Link>

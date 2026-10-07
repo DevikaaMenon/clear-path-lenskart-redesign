@@ -5,7 +5,9 @@ import { ShapeStrip } from "@/components/home/ShapeStrip";
 import { PopularFrames } from "@/components/home/PopularFrames";
 import { TrustStrip } from "@/components/ui/TrustStrip";
 import { ButtonLink } from "@/components/ui/Button";
-import { FrameIllustration } from "@/components/frames/FrameIllustration";
+import { UxMarker } from "@/components/ux/UxMarker";
+import { Photo } from "@/components/ui/Photo";
+import { PHOTOS } from "@/lib/photos";
 import { allProducts, activeOffers, lensCatalogue } from "@/lib/server/repo";
 import { toCard } from "@/lib/server/catalogue-service";
 import { sortProducts } from "@/lib/catalogue";
@@ -35,7 +37,10 @@ export default async function Home() {
       <HomeHero />
 
       <section aria-label="Our promises" className="page mt-16">
-        <TrustStrip />
+        <div className="relative">
+          <TrustStrip />
+          <UxMarker id="home-trust" />
+        </div>
       </section>
 
       <ShapeStrip counts={shapeCounts} need={need} />
@@ -45,8 +50,9 @@ export default async function Home() {
       {/* One campaign slot only (U2), with a descriptive call to action */}
       {hero ? (
         <section aria-labelledby="campaign-title" className="page mt-24">
-          <div className="grid-page items-center gap-y-8 border border-ink bg-surface p-6 md:p-10">
-            <div className="col-span-4 md:col-span-4 xl:col-span-5">
+          <div className="grid-page relative items-center gap-y-8 border border-ink bg-surface p-6 md:p-10">
+            <UxMarker id="home-campaign" />
+            <div className="col-span-4 md:col-span-5 xl:col-span-7">
               <p className="eyebrow">Collection · Featherweight</p>
               <h2 id="campaign-title" className="mt-3 font-display text-4xl">
                 Frames that weigh less than <span className="num whitespace-nowrap text-accent">12 g</span>
@@ -58,15 +64,13 @@ export default async function Home() {
                 Shop the Featherweight collection
               </ButtonLink>
             </div>
-            <div className="col-span-4 md:col-span-4 xl:col-span-7">
-              <div className="relative border-t border-line pt-6">
-                <FrameIllustration frame={hero} colour={hero.colours[0]} title={`Front view of ${hero.name}, a ${hero.colours[0].name.toLowerCase()} rimless titanium frame`} className="w-full" />
-                <div className="mt-2 flex items-center gap-3" aria-hidden="true">
-                  <span className="h-px flex-1 bg-ink" />
-                  <span className="num text-sm">{hero.lensWidthMm}□{hero.bridgeMm} · {hero.templeMm} · {hero.weightG} g</span>
-                  <span className="h-px flex-1 bg-ink" />
-                </div>
-              </div>
+            <div className="col-span-4 md:col-span-3 xl:col-span-4 xl:col-start-9">
+              <Photo
+                src={PHOTOS.featherweight.src}
+                alt={PHOTOS.featherweight.alt}
+                sizes="(min-width: 80em) 26vw, (min-width: 52.125em) 30vw, 100vw"
+                className="mx-auto w-full max-w-[24rem]"
+              />
             </div>
           </div>
         </section>
@@ -74,15 +78,21 @@ export default async function Home() {
 
       {/* Eye test module */}
       <section aria-labelledby="eyetest-title" className="theme-ink mt-24">
-        <div className="page grid-page items-end gap-y-8 py-16 md:py-24">
-          <div className="col-span-4 md:col-span-5 xl:col-span-7">
+        <div className="page grid-page items-center gap-y-8 py-16 md:py-24">
+          <div className="col-span-4 md:col-span-3 xl:col-span-4">
+            <Photo
+              src={PHOTOS.eyeTest.src}
+              alt={PHOTOS.eyeTest.alt}
+              sizes="(min-width: 80em) 26vw, (min-width: 52.125em) 30vw, 100vw"
+              className="mx-auto w-full max-w-[24rem]"
+            />
+          </div>
+          <div className="col-span-4 md:col-span-5 xl:col-span-7 xl:col-start-6">
             <p className="eyebrow">Free at every store with an optometrist</p>
             <h2 id="eyetest-title" className="mt-3 font-display text-5xl">
               Don&apos;t know your power? <em className="text-accent">Get it checked free.</em>
             </h2>
-          </div>
-          <div className="col-span-4 md:col-span-3 xl:col-span-4 xl:col-start-9">
-            <p className="text-muted">A 20-minute eye test by a qualified optometrist. No purchase needed. You can also order now and add your prescription later.</p>
+            <p className="mt-6 max-w-[52ch] text-muted">A 20-minute eye test by a qualified optometrist. No purchase needed. You can also order now and add your prescription later.</p>
             <div className="mt-6 flex flex-col gap-3">
               <ButtonLink href="/stores" variant="accent" iconRight="arrow-right">Book a free eye test</ButtonLink>
               <Link href="/stores#store-list" className="link inline-flex min-h-[44px] items-center">Find a store near you</Link>

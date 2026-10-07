@@ -15,12 +15,13 @@ const base =
 // Hover: the button lifts off its hairline shadow (like a card pulled from a tray).
 // Active: it presses flat. Disabled: flat, muted, no lift.
 const variants: Record<Variant, string> = {
+  // Flat, square, brand-blue fill, as on lenskart.com. Hover lightens; press darkens.
   primary:
-    "bg-ink text-paper border border-ink hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lift-sm active:translate-x-0 active:translate-y-0 active:shadow-none " +
-    "disabled:bg-line disabled:border-line disabled:text-muted disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-none",
+    "bg-ink text-paper border border-ink hover:bg-ink-2 hover:border-ink-2 active:bg-ink " +
+    "disabled:bg-line disabled:border-line disabled:text-muted",
   accent:
-    "bg-accent text-accent-ink border border-accent hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lift-sm active:translate-x-0 active:translate-y-0 active:shadow-none " +
-    "disabled:bg-line disabled:border-line disabled:text-muted disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-none",
+    "bg-accent text-accent-ink border border-accent hover:opacity-90 active:opacity-100 " +
+    "disabled:bg-line disabled:border-line disabled:text-muted",
   secondary:
     "bg-surface text-ink border border-ink hover:bg-sunk active:bg-line " +
     "disabled:text-muted disabled:border-line disabled:bg-transparent",

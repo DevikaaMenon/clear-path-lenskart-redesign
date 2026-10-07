@@ -18,7 +18,7 @@ const Lines = ({ sharp }: { sharp: boolean }) => (
         <span className="num absolute left-4 text-xs text-muted">{i + 1}</span>
         <span
           className={`font-display font-semibold leading-none tracking-[0.14em] ${sharp ? "text-ink" : "text-muted"}`}
-          style={{ fontSize: l.size, fontVariationSettings: '"opsz" 144, "SOFT" 0, "WONK" 0' }}
+          style={{ fontSize: l.size }}
         >
           {l.text}
         </span>

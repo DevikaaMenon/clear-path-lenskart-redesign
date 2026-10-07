@@ -10,36 +10,22 @@ import { Toasts } from "@/components/ui/Toasts";
 import { CompareTray } from "@/components/compare/CompareTray";
 import { TestMode } from "@/components/testmode/TestMode";
 import { ViewTransitionBridge } from "@/components/motion/ViewTransition";
+import { UxReviewProvider } from "@/components/ux/UxReviewProvider";
+import { UxReviewBar } from "@/components/ux/UxReviewBar";
 import { NEED_IDS, type NeedId } from "@/lib/taxonomy";
 
-// Self-hosted, SIL Open Font License faces (copied from @fontsource by scripts/copy-fonts.mjs).
-const display = localFont({
+// Brand typeface as used on lenskart.com: Plus Jakarta Sans (SIL Open Font License),
+// self-hosted (copied from @fontsource by scripts/copy-fonts.mjs). One family for
+// headings, body text and numbers, as on the real site.
+const brand = localFont({
   src: [
-    { path: "./fonts/fraunces-var.woff2", style: "normal", weight: "100 900" },
-    { path: "./fonts/fraunces-var-italic.woff2", style: "italic", weight: "100 900" },
+    { path: "./fonts/jakarta-var.woff2", style: "normal", weight: "200 800" },
+    { path: "./fonts/jakarta-var-italic.woff2", style: "italic", weight: "200 800" },
   ],
-  variable: "--font-display-src",
-  display: "swap",
-  fallback: ["Georgia", "serif"],
-  adjustFontFallback: "Times New Roman",
-});
-const text = localFont({
-  src: [
-    { path: "./fonts/atkinson-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/atkinson-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/atkinson-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-text-src",
+  variable: "--font-brand-src",
   display: "swap",
   fallback: ["system-ui", "Arial", "sans-serif"],
   adjustFontFallback: "Arial",
-});
-const mono = localFont({
-  src: [{ path: "./fonts/jetbrains-mono-var.woff2", weight: "100 800", style: "normal" }],
-  variable: "--font-mono-src",
-  display: "swap",
-  fallback: ["ui-monospace", "Consolas", "monospace"],
-  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
@@ -52,11 +38,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f4f1e8",
+  themeColor: "#ffffff",
 };
 
 // Applies the saved "Larger text" preference before first paint (no flash, no layout jump).
-const textPrefScript = `try{var t=JSON.parse(localStorage.getItem("cp_text")||"null");if(t==="large")document.documentElement.dataset.text="large"}catch(e){}`;
+const textPrefScript = `try{var t=JSON.parse(localStorage.getItem("cp_text")||"null");if(t==="large")document.documentElement.dataset.text="large";if(localStorage.getItem("cp_ux_markers")==="off")document.documentElement.dataset.ux="off"}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const jar = await cookies();
@@ -64,14 +50,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const initialNeed = (NEED_IDS as string[]).includes(c ?? "") ? (c as NeedId) : null;
 
   return (
-    <html lang="en-IN" className={`${display.variable} ${text.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en-IN" className={brand.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: textPrefScript }} />
       </head>
       <body>
         <ShopProvider initialNeed={initialNeed}>
+          <UxReviewProvider>
           <a href="#main" className="skip-link">Skip to main content</a>
           <div id="app-root">
+            <UxReviewBar />
             <Header />
             <main id="main" tabIndex={-1} className="outline-none">
               {children}
@@ -83,6 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <RouteFocus />
           <TestMode />
           <ViewTransitionBridge />
+          </UxReviewProvider>
         </ShopProvider>
       </body>
     </html>

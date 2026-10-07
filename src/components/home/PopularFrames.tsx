@@ -7,6 +7,7 @@ import type { CardDTO } from "@/lib/server/catalogue-service";
 import { needById } from "@/lib/taxonomy";
 import { ProductCard } from "../catalogue/ProductCard";
 import { Icon } from "../ui/Icon";
+import { UxMarker } from "../ux/UxMarker";
 
 const Try3DDialog = dynamic(() => import("../three/Try3DDialog").then((m) => m.Try3DDialog), { ssr: false });
 
@@ -27,8 +28,9 @@ export function PopularFrames({
         </Link>
       </div>
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {items.map((p) => (
-          <li key={p.id}>
+        {items.map((p, i) => (
+          <li key={p.id} className="relative">
+            {i === 0 ? <UxMarker id="home-cards" corner="tl" /> : null}
             <ProductCard p={p} need={need} offerTag={offerTag} lensFrom={lensFrom} onTry3D={(pp, ci) => setTry3d({ p: pp, ci })} />
           </li>
         ))}

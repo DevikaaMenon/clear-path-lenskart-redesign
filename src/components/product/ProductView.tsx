@@ -395,7 +395,7 @@ export function ProductView({
                     Added to your bag: {p.name}, size {size}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href="/cart" className="inline-flex min-h-[48px] items-center gap-2 bg-ink px-5 font-semibold text-paper hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lift-sm transition-[transform,box-shadow]">
+                    <Link href="/cart" className="inline-flex min-h-[48px] items-center gap-2 bg-ink px-5 font-semibold text-paper hover:bg-ink-2 transition-[transform,box-shadow]">
                       Go to bag <Icon name="arrow-right" size={18} />
                     </Link>
                     <Button variant="secondary" onClick={() => setAdded(false)}>Keep shopping</Button>
