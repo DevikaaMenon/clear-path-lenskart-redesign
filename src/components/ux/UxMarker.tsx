@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { changeById } from "@/lib/ux-changes";
+import { changeById, pathMatches } from "@/lib/ux-changes";
 import { useUxReview } from "./UxReviewProvider";
 
 const CARD_W = 320;
@@ -32,7 +32,7 @@ export function UxMarker({ id, corner = "tr", className = "" }: { id: string; co
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const visible = !!change && enabled && change.paths.includes(pathname);
+  const visible = !!change && enabled && pathMatches(change.paths, pathname);
   const isOpen = visible && openId === id;
   const cardId = `ux-card-${id}`;
 

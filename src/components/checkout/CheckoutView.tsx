@@ -14,6 +14,7 @@ import { AccordionItem } from "../ui/Accordion";
 import { Button, ButtonLink } from "../ui/Button";
 import { Input, Select } from "../ui/Field";
 import { ErrorSummary } from "../ui/ErrorSummary";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon, type IconName } from "../ui/Icon";
 import { TrustStrip } from "../ui/TrustStrip";
 import { OrderSummary } from "../cart/CartView";
@@ -63,6 +64,14 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
   const idem = useRef<string>("");
   const summaryRef = useRef<HTMLDivElement>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
+  // Focus moves to the error summary / banner once it has rendered (a timer could fire too early).
+  const [summaryTick, setSummaryTick] = useState(0);
+  useEffect(() => {
+    if (summaryTick) summaryRef.current?.focus();
+  }, [summaryTick]);
+  useEffect(() => {
+    if (banner) bannerRef.current?.focus();
+  }, [banner]);
 
   // One idempotency key per checkout attempt: retries reuse it, so no duplicate orders.
   useEffect(() => {
@@ -80,7 +89,7 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
     setErrors(errs);
     setSummaryFor(step);
     reportTestError();
-    window.setTimeout(() => summaryRef.current?.focus(), 40);
+    setSummaryTick((t) => t + 1);
   };
 
   const validate = (step: Step): boolean => {
@@ -132,7 +141,6 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
       } else if (err.code === "validation_failed" && err.fields) {
         setBanner({ kind: "other", title: "Some details need fixing", body: err.message });
       } else setBanner({ kind: "other", title: "Order not placed", body: err.message });
-      window.setTimeout(() => bannerRef.current?.focus(), 40);
     } finally {
       setBusy(false);
     }
@@ -156,7 +164,8 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
     <div className="page pb-16 pt-10 md:pt-14">
       <p className="eyebrow">Step 4 · Pay</p>
       <h1 className="mt-2 font-display text-5xl">Checkout</h1>
-      <p className="mt-3 flex flex-wrap items-center gap-2 text-muted">
+      <p className="relative mt-3 flex w-fit flex-wrap items-center gap-2 pr-6 text-muted">
+        <UxMarker id="checkout-guest" />
         {user ? <>Signed in as <strong className="text-ink">{user.email}</strong>.</> : <>Checking out as a guest. <Link href="/account?next=/checkout" className="link">Sign in instead (optional)</Link></>}
       </p>
       <p className="mt-3 inline-flex items-center gap-2 border border-warning bg-warning-soft px-3 py-1.5 text-sm font-semibold">
@@ -174,9 +183,10 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
                 initial={reduce ? false : { opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mb-6 border-2 border-danger bg-danger-soft p-4"
+                className="relative mb-6 border-2 border-danger bg-danger-soft p-4"
                 data-testid="checkout-error"
               >
+                <UxMarker id="checkout-recovery" />
                 <p className="flex items-center gap-2 text-lg font-bold text-danger"><Icon name="alert" /> {banner.title}</p>
                 <p className="mt-1">{banner.body}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -192,7 +202,8 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
             ) : null}
           </AnimatePresence>
 
-          <div className="border-t border-ink">
+          <div className="relative border-t border-ink">
+            <UxMarker id="checkout-steps" />
             <AccordionItem
               title="1. Contact"
               summary={done.has("contact") ? `${contact.name} · ${contact.email} · ${contact.phone}` : "Email and mobile number"}
@@ -280,7 +291,8 @@ export function CheckoutView({ initial, user }: { initial: CartData; user: { ema
             </AccordionItem>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="relative mt-6 flex flex-col gap-3">
+            <UxMarker id="checkout-pay" />
             <Button variant="primary" size="lg" full icon="lock" onClick={placeOrder} loading={busy} loadingText="Placing your order" data-testid="place-order">
               {method === "cod" ? "Place order" : "Pay"} · {formatINR(total)}
             </Button>

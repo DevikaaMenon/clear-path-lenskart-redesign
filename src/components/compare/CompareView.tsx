@@ -15,6 +15,7 @@ import { materialLabel, shapeLabel } from "../catalogue/ProductCard";
 import { useTransitionNavigate } from "../motion/ViewTransition";
 import { Button, ButtonLink } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 import { CardSkeleton } from "../ui/Skeleton";
 
@@ -103,7 +104,8 @@ export function CompareView() {
       ) : (
         <>
           {/* To-scale overlay: all frames drawn on top of each other at the same mm scale */}
-          <figure className="mt-8 grid-page items-center gap-y-4 border border-line bg-surface p-4 md:p-6">
+          <figure className="relative mt-8 grid-page items-center gap-y-4 border border-line bg-surface p-4 md:p-6">
+            <UxMarker id="compare-overlay" />
             <div className="col-span-4 md:col-span-5 xl:col-span-7">
               <svg viewBox={`0 0 ${VB_W} ${VB_H}`} className="w-full" role="img" aria-label={`Outlines of ${list.map((p) => p.name).join(", ")} drawn on top of each other at the same scale to compare size.`}>
                 <line x1="20" x2={VB_W - 20} y1={VB_H / 2 + 4} y2={VB_H / 2 + 4} stroke="var(--c-line)" />
@@ -135,7 +137,9 @@ export function CompareView() {
             </figcaption>
           </figure>
 
-          <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label="Comparison table, scrolls sideways on small screens">
+          <div className="relative mt-8">
+          <UxMarker id="compare-table" />
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Comparison table, scrolls sideways on small screens">
             <table className="w-full min-w-[640px] border-collapse text-left">
               <caption className="sr-only">Comparison of {list.length} frames</caption>
               <thead>
@@ -199,6 +203,7 @@ export function CompareView() {
                 })}
               </tbody>
             </table>
+          </div>
           </div>
           {list.length === 1 ? <p className="mt-4 text-muted">Add at least one more frame to compare side by side.</p> : null}
         </>

@@ -10,6 +10,7 @@ import { NEED_ICON } from "@/lib/nav";
 import { api, ApiError } from "@/lib/client/api";
 import { useShop } from "../providers/ShopProvider";
 import { Button } from "../ui/Button";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 
 const STEP_TITLES = ["What are the glasses for?", "What shape is your face?", "How do glasses usually fit you?"];
@@ -134,7 +135,9 @@ export function FrameFinder({ kids = false }: { kids?: boolean }) {
         <p className="mt-4 max-w-[40ch] text-lg text-muted">Three quick questions. Skip any you&apos;re unsure about. You&apos;ll see matching frames you can still filter.</p>
 
         {/* Progress: fills as you go */}
-        <div className="mt-8" aria-hidden="true">
+        <div className="relative mt-8">
+        <UxMarker id="finder-progress" />
+        <div aria-hidden="true">
           <div className="flex justify-between text-sm">
             {STEP_TITLES.map((t, i) => (
               <span key={t} className={`num ${i <= step || result ? "text-ink" : "text-muted"}`}>0{i + 1}</span>
@@ -144,6 +147,7 @@ export function FrameFinder({ kids = false }: { kids?: boolean }) {
           <div className="mt-2 h-[3px] w-full bg-line">
             <motion.div className="h-full origin-left bg-accent" animate={{ scaleX: progress }} initial={false} transition={{ duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] }} />
           </div>
+        </div>
         </div>
         <p className="sr-only" aria-live="polite">{result ? "Results ready" : `Question ${step + 1} of 3`}</p>
 
@@ -162,7 +166,8 @@ export function FrameFinder({ kids = false }: { kids?: boolean }) {
         </dl>
       </div>
 
-      <div className="col-span-4 md:col-span-8 xl:col-span-8 xl:col-start-5">
+      <div className="relative col-span-4 md:col-span-8 xl:col-span-8 xl:col-start-5">
+        {result ? <UxMarker id="finder-result" /> : <UxMarker id="finder-question" />}
         <div className="relative overflow-hidden border border-ink bg-surface">
           <AnimatePresence mode="wait" custom={dir} initial={false}>
             {result ? (
@@ -192,6 +197,9 @@ export function FrameFinder({ kids = false }: { kids?: boolean }) {
                     return (
                       <motion.label
                         key={o.id}
+                        // The radio inside is the keyboard stop; without this, motion's tap gesture
+                        // makes every card an extra Tab stop.
+                        tabIndex={-1}
                         whileTap={reduce ? undefined : { scale: 0.97 }}
                         animate={sel && !reduce ? { scale: [1, 1.025, 1] } : { scale: 1 }}
                         transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}

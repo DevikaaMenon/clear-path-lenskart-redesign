@@ -13,6 +13,7 @@ import { ProductCard } from "./ProductCard";
 import { FilterPanel } from "./FilterPanel";
 import { Drawer } from "../ui/Drawer";
 import { Button } from "../ui/Button";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 import { EmptyState } from "../ui/EmptyState";
 import { CardSkeleton } from "../ui/Skeleton";
@@ -125,7 +126,8 @@ export function ListingView({
     <div className="page pb-16">
       {/* Listing header: the chosen need's lens carries over from the home tile (view transition) */}
       <section className="grid-page items-end gap-y-6 border-b border-ink pb-8 pt-10 md:pt-14" aria-labelledby="listing-title">
-        <div className="col-span-4 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:gap-5 md:col-span-6 xl:col-span-8">
+        <div className="relative col-span-4 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:gap-5 md:col-span-6 xl:col-span-8">
+          <UxMarker id="listing-need" corner="tl" />
           {needObj ? (
             <span
               className="grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-ink bg-accent-soft text-accent sm:h-20 sm:w-20 md:h-28 md:w-28"
@@ -157,7 +159,10 @@ export function ListingView({
         {/* Desktop filters */}
         <aside className="hidden xl:col-span-3 xl:block" aria-label="Filters">
           <div className="sticky top-[calc(var(--header-h)+16px)] max-h-[calc(100vh-var(--header-h)-32px)] overflow-y-auto pb-8">
-            <h2 className="eyebrow mb-3 flex items-center gap-2 !text-ink"><Icon name="sliders" size={18} /> Filters</h2>
+            <div className="relative">
+              <h2 className="eyebrow mb-3 flex items-center gap-2 !text-ink"><Icon name="sliders" size={18} /> Filters</h2>
+              <UxMarker id="listing-filters" className="!top-[-10px] !right-0" />
+            </div>
             <FilterPanel query={query} facets={data.facets} options={data.options} onToggle={toggle} />
           </div>
         </aside>
@@ -189,7 +194,8 @@ export function ListingView({
 
           {/* Active filter chips */}
           {activeCount ? (
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div className="relative mt-4 flex w-fit max-w-full flex-wrap items-center gap-2 pr-6">
+              <UxMarker id="listing-chips" />
               <ul ref={chipsRef} className="flex flex-wrap gap-2" aria-label="Active filters">
                 <AnimatePresence initial={false} mode="popLayout">
                   {data.active.map((a, i) => (
@@ -230,12 +236,14 @@ export function ListingView({
           ) : null}
 
           {/* Results */}
-          <div className="mt-6" aria-busy={loading}>
+          <div className="relative mt-6" aria-busy={loading}>
             {loading && !data.items.length ? (
               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => <li key={i}><CardSkeleton /></li>)}
               </ul>
             ) : data.total === 0 ? (
+              <div className="relative">
+              <UxMarker id="listing-empty" />
               <EmptyState
                 title="No frames match all of these filters"
                 body={
@@ -260,8 +268,10 @@ export function ListingView({
                 ) : null}
                 <Button variant="primary" onClick={clearAll}>Clear all filters</Button>
               </EmptyState>
+              </div>
             ) : (
               <LayoutGroup>
+                <UxMarker id="listing-cards" corner="tl" />
                 <motion.ul className={`grid grid-cols-1 gap-4 transition-opacity duration-ui sm:grid-cols-2 xl:grid-cols-3 ${loading ? "opacity-50" : ""}`} data-testid="results">
                   <AnimatePresence initial={false} mode="popLayout">
                     {data.items.map((p, i) => (

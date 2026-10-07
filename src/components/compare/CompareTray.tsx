@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { formatINR } from "@/lib/pricing";
 import { MAX_COMPARE, useShop } from "../providers/ShopProvider";
 import { ShapeGlyph } from "../frames/ShapeGlyph";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 
 const HIDDEN_ON = ["/compare", "/checkout", "/order", "/design-system"];
@@ -47,6 +48,7 @@ export function CompareTray() {
           transition={{ type: "spring", stiffness: 380, damping: 34 }}
           className="fixed inset-x-0 bottom-0 z-tray border-t border-ink bg-paper md:bottom-4 md:mx-auto md:w-[min(1080px,calc(100%-32px))] md:border md:shadow-lift"
         >
+          <UxMarker id="listing-compare" corner="tl" className="max-md:!left-1" />
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               className="flex min-h-[44px] items-center gap-2 text-left md:pointer-events-none"

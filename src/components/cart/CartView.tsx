@@ -10,6 +10,7 @@ import { api, ApiError } from "@/lib/client/api";
 import { useShop } from "../providers/ShopProvider";
 import { FrameIllustration, frameAlt, type Tint } from "../frames/FrameIllustration";
 import { Button, ButtonLink } from "../ui/Button";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 import { TrustStrip } from "../ui/TrustStrip";
 import { EmptyState } from "../ui/EmptyState";
@@ -141,6 +142,8 @@ export function CartView({ initial }: { initial: CartData }) {
       <h1 className="mt-2 font-display text-5xl">Your bag</h1>
       <div className="grid-page mt-8 gap-y-8">
         <div className="col-span-4 md:col-span-8 xl:col-span-7">
+          <div className="relative">
+          <UxMarker id="cart-items" />
           <ul className="border-t border-ink" aria-label="Items in your bag">
             <AnimatePresence initial={false}>
               {data.items.map((i) => {
@@ -197,6 +200,7 @@ export function CartView({ initial }: { initial: CartData }) {
               })}
             </AnimatePresence>
           </ul>
+          </div>
           {missingRx.length ? (
             <p className="mt-4 flex gap-2 border-l-2 border-accent bg-accent-soft px-3 py-2 text-sm">
               <Icon name="info" size={18} className="mt-0.5 shrink-0 text-accent" />
@@ -207,7 +211,10 @@ export function CartView({ initial }: { initial: CartData }) {
 
         <aside className="col-span-4 md:col-span-8 xl:col-span-5" aria-label="Summary and checkout">
           <div className="flex flex-col gap-4 xl:sticky xl:top-[calc(var(--header-h)+24px)]">
-            <OrderSummary data={data} />
+            <div className="relative">
+              <OrderSummary data={data} />
+              <UxMarker id="cart-offer" />
+            </div>
 
             {/* Optional, secondary code field (X7) */}
             <div className="border border-line bg-surface">
@@ -232,11 +239,14 @@ export function CartView({ initial }: { initial: CartData }) {
               ) : null}
             </div>
 
+            <div className="relative flex flex-col gap-4">
+            <UxMarker id="cart-checkout" />
             <ButtonLink href="/checkout" variant="primary" size="lg" full iconRight="arrow-right" data-testid="go-checkout" aria-disabled={data.items.some((i) => i.stock <= 0)}>
               Check out · {formatINR(data.pricing.total)}
             </ButtonLink>
             <p className="text-center text-sm text-muted">No account needed. Guest checkout in three short steps.</p>
             <TrustStrip compact />
+            </div>
           </div>
         </aside>
       </div>

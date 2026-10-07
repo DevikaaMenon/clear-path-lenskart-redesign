@@ -18,6 +18,13 @@ export function RouteFocus() {
       return;
     }
     const t = window.setTimeout(() => {
+      // If the user has already moved focus into the new page (e.g. an error summary
+      // after a quick submit), don't take it away.
+      const active = document.activeElement;
+      if (active && active !== document.body && document.getElementById("main")?.contains(active)) {
+        setMsg(document.title);
+        return;
+      }
       const h1 = document.querySelector<HTMLElement>("main h1");
       const target = h1 ?? document.getElementById("main");
       if (target) {

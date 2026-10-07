@@ -13,6 +13,7 @@ import { FrameIllustration, frameAlt, type Tint } from "../frames/FrameIllustrat
 import { useShop } from "../providers/ShopProvider";
 import { materialLabel, shapeLabel } from "../catalogue/ProductCard";
 import { Button } from "../ui/Button";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon } from "../ui/Icon";
 import { TrustStrip } from "../ui/TrustStrip";
 import { PriceBreakdown } from "./PriceBreakdown";
@@ -181,6 +182,7 @@ export function ProductView({
               <span className="num text-sm text-muted">{p.modelCode}</span>
             </div>
             <div className="relative mt-4">
+              <UxMarker id="product-image" />
               {view === "front" ? (
                 <div id="view-front" role="tabpanel" aria-labelledby="tab-front" className="relative aspect-[4/3] border border-line bg-surface" style={{ viewTransitionName: "frame-hero" }}>
                   <AnimatePresence mode="popLayout" initial={false}>
@@ -257,7 +259,8 @@ export function ProductView({
           </fieldset>
 
           {/* 2. Size with measurements (X6) */}
-          <fieldset className="mt-8 border-t border-line pt-6" aria-describedby={sizeHelpId}>
+          <fieldset className="relative mt-8 border-t border-line pt-6" aria-describedby={sizeHelpId}>
+            <UxMarker id="product-size" />
             <legend className="float-left mb-1 flex w-full items-center justify-between font-bold">
               <span><span className="num mr-2 text-muted">2</span>Size</span>
               <button type="button" onClick={() => setFms(true)} className="link inline-flex min-h-[44px] items-center gap-1 text-sm">
@@ -315,7 +318,8 @@ export function ProductView({
           </fieldset>
 
           {/* 3. Lens purpose (X6 rename) */}
-          <fieldset className="mt-8 border-t border-line pt-6">
+          <fieldset className="relative mt-8 border-t border-line pt-6">
+            <UxMarker id="product-purpose" />
             <legend className="float-left mb-3 w-full font-bold"><span className="num mr-2 text-muted">3</span>What are the lenses for?</legend>
             <div className="clear-both flex flex-col gap-2">
               {PURPOSES.filter((pp) => allowed.includes(pp.id)).map((pp) => (
@@ -371,7 +375,10 @@ export function ProductView({
 
           {/* Live price + CTA + trust (X5, X8) */}
           <div className="mt-8 flex flex-col gap-4" ref={ctaRef}>
-            <PriceBreakdown result={result} note={<span>Have a code? You can add it in your bag. We&apos;ll only use it if it saves you more.</span>} />
+            <div className="relative">
+              <PriceBreakdown result={result} note={<span>Have a code? You can add it in your bag. We&apos;ll only use it if it saves you more.</span>} />
+              <UxMarker id="product-price" />
+            </div>
             {error ? (
               <p role="alert" className="flex gap-2 border-2 border-danger bg-danger-soft p-3 font-semibold text-danger">
                 <Icon name="alert" size={20} className="mt-0.5 shrink-0" /> {error}
@@ -410,7 +417,10 @@ export function ProductView({
               )}
             </AnimatePresence>
             <p className="text-center text-sm text-muted">Delivered in 4–7 days. Free shipping. Pay online or cash on delivery.</p>
-            <TrustStrip compact />
+            <div className="relative">
+              <TrustStrip compact />
+              <UxMarker id="product-trust" />
+            </div>
           </div>
         </div>
       </div>

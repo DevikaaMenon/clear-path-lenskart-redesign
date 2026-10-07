@@ -18,7 +18,7 @@ export function UxReviewBar() {
   // Markers whose element isn't shown at this screen width (e.g. desktop-only navigation).
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
   const openPanel = () => {
-    setHiddenIds(new Set(changes.filter((c) => { const el = elementFor(c.id); return enabled && (!el || el.offsetParent === null); }).map((c) => c.id)));
+    setHiddenIds(new Set(changes.filter((c) => { const el = elementFor(c.id); return enabled && (!el || el.getClientRects().length === 0); }).map((c) => c.id)));
     setPanel(true);
   };
   const changes = changesForPath(pathname);
@@ -29,7 +29,7 @@ export function UxReviewBar() {
     // Wait for the drawer to close (it restores focus) and markers to render, then jump.
     window.setTimeout(() => {
       const el = elementFor(id);
-      if (!el || el.offsetParent === null) return; // not shown at this width (noted in the panel)
+      if (!el || el.getClientRects().length === 0) return; // not on screen right now (noted in the panel)
       el.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       el.focus({ preventScroll: true });
       open(id, true);
@@ -76,7 +76,7 @@ export function UxReviewBar() {
                 <span>
                   <span className="block font-semibold">{c.title}</span>
                   <span className="block text-sm text-muted">{c.issues.join(", ")} · {c.why.split(":")[0]}</span>
-                  {hiddenIds.has(c.id) ? <span className="block text-sm font-semibold text-note">Not visible at this screen width; it is part of the desktop navigation.</span> : null}
+                  {hiddenIds.has(c.id) ? <span className="block text-sm font-semibold text-note">{c.hiddenNote ?? "Not visible on screen right now."}</span> : null}
                 </span>
               </button>
             </li>

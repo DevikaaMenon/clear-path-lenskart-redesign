@@ -6,6 +6,7 @@ import { loadOrder } from "@/lib/server/orders";
 import { formatINR } from "@/lib/pricing";
 import { CheckedMark } from "@/components/prescription/PrescriptionFlow";
 import { ButtonLink } from "@/components/ui/Button";
+import { UxMarker } from "@/components/ux/UxMarker";
 import { Icon } from "@/components/ui/Icon";
 
 export const metadata: Metadata = { title: "Order confirmed" };
@@ -38,7 +39,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           <CheckedMark size={80} />
           <p className="eyebrow mt-6">Step 5 · Done</p>
           <h1 id="confirm-title" className="mt-2 font-display text-5xl">Thank you, {order.name.split(" ")[0]}. Your order is placed.</h1>
-          <dl className="mt-8 grid gap-px border border-ink bg-ink sm:grid-cols-3">
+          <div className="relative mt-8">
+          <UxMarker id="order-facts" />
+          <dl className="grid gap-px border border-ink bg-ink sm:grid-cols-3">
             <div className="bg-surface p-4">
               <dt className="eyebrow">Order number</dt>
               <dd className="num mt-1 text-2xl font-bold" data-testid="order-number">{order.number}</dd>
@@ -53,7 +56,10 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
               <dd className="text-sm text-muted">{METHOD[order.paymentMethod]}{order.paymentMethod === "cod" ? ", pay on delivery" : " (demo, nothing charged)"}</dd>
             </div>
           </dl>
+          </div>
 
+          <div className="relative">
+          <UxMarker id="order-next" />
           <h2 className="mt-12 font-display text-3xl">What happens next</h2>
           <ol className="mt-4 border-l-2 border-line pl-6">
             {steps.map((s, i) => (
@@ -66,6 +72,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
               </li>
             ))}
           </ol>
+          </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink href={`/order/${order.id}/track`} variant="primary" icon="truck">Track order</ButtonLink>
@@ -95,7 +102,8 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
               <p className="text-muted">{order.name}<br />{address.line1}{address.line2 ? `, ${address.line2}` : ""}<br />{address.city}, {address.state} {address.pincode}</p>
             </div>
           </div>
-          <p className="mt-4 text-sm text-muted">
+          <p className="relative mt-4 w-fit pr-6 text-sm text-muted">
+            <UxMarker id="order-cancel" />
             Need to change something? <Link href="/help#returns" className="link">Cancel or return</Link> any time before it ships, free.
           </p>
         </aside>

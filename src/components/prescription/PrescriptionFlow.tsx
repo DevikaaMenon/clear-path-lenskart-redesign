@@ -11,6 +11,7 @@ import {
 import { api, ApiError, upload } from "@/lib/client/api";
 import { Stepper } from "../ui/Stepper";
 import { Button } from "../ui/Button";
+import { UxMarker } from "../ux/UxMarker";
 import { Icon, type IconName } from "../ui/Icon";
 import { ErrorSummary } from "../ui/ErrorSummary";
 import { FieldShell, describedBy } from "../ui/Field";
@@ -187,7 +188,8 @@ export function PrescriptionFlow({
         </p>
         <div className="mt-6"><Stepper steps={steps} current={done ? 3 : step} label="Prescription steps" /></div>
 
-        <div className="mt-8">
+        <div className="relative mt-8">
+          <UxMarker id={step === 1 && !done ? "rx-checks" : "rx-methods"} />
           <AnimatePresence mode="wait" initial={false}>
             {done ? (
               <motion.div key="done" initial={reduce ? false : { opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-start gap-4 border border-ink bg-surface p-6 md:p-10" role="status">
@@ -386,7 +388,8 @@ export function PrescriptionFlow({
         </div>
       </div>
       <aside className="col-span-4 md:col-span-8 xl:col-span-4" aria-label="Help with prescriptions">
-        <div className="border border-line bg-surface p-5">
+        <div className="relative border border-line bg-surface p-5">
+          <UxMarker id="rx-privacy" />
           <h2 className="font-sans text-lg font-bold">Your prescription is private</h2>
           <ul className="mt-3 flex flex-col gap-2 text-sm text-muted">
             <li className="flex gap-2"><Icon name="lock" size={18} className="shrink-0 text-accent" /> Only our optometrists see it, to make your lenses.</li>
