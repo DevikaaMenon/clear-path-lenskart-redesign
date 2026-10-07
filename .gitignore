@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.env
+*.db
+*.db-journal
+/storage
+/test-results
+/playwright-report
+/blob-report
+next-env.d.ts
+*.tsbuildinfo
+/src/app/fonts/*.woff2

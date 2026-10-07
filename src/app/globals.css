@@ -1,0 +1,203 @@
+@import "./tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+  body {
+    background: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-text);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: "kern", "liga";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--c-highlight); color: #0f1d2b; }
+
+  /* Focus: 2px solid ring with 2px offset, 15:1 against paper; yellow on ink sections */
+  :focus { outline: none; }
+  :focus-visible {
+    outline: var(--rule) solid var(--c-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  /* Programmatic focus targets (headings after navigation) get a softer cue */
+  [tabindex="-1"]:focus-visible { outline-offset: 4px; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  img, svg { display: block; }
+  input, select, textarea { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+}
+
+@layer components {
+  /* Page container on the 4 / 8 / 12 column grid */
+  .page {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+  .grid-page {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 16px;
+    top: -100px;
+    z-index: 70;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    padding: 12px 20px;
+    font-weight: 700;
+    transition: top var(--dur-ui) var(--ease-settle);
+  }
+  .skip-link:focus-visible { top: 12px; outline-color: var(--c-highlight); }
+
+  /* Eyebrow / caption label in mono */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+  /* Numbers that are measurements or prices */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* Text link: underline draws in from the left on hover */
+  .link {
+    color: var(--c-accent);
+    font-weight: 600;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 1px;
+    transition: background-size var(--dur-ui) var(--ease-settle);
+  }
+  .link:hover { background-size: 100% 2px; }
+
+.footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: var(--c-muted);
+    transition: color var(--dur-micro), transform var(--dur-ui) var(--ease-settle);
+  }
+  .footer-link:hover { color: var(--c-ink); transform: translateX(3px); }
+
+  /* Hairline rules */
+  .rule-t { border-top: 1px solid var(--c-line); }
+  .rule-b { border-bottom: 1px solid var(--c-line); }
+
+  /* Skeleton: shaped like the real content; shimmer is a slow sweep, static under reduced motion */
+  .skeleton {
+    background: var(--c-sunk);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+    animation: shimmer 1.4s var(--ease-glide) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) { .skeleton::after { display: none; } }
+
+  /* Highlighter sweep for a changed value (live price) */
+  .hl-sweep {
+    background-image: linear-gradient(var(--c-highlight), var(--c-highlight));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    animation: hl-sweep 1.2s var(--ease-settle);
+  }
+
+  /* Visually hidden but available to assistive tech */
+  .sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+  }
+
+  /* Tap target helper: guarantees 44px hit area without changing visuals */
+  .tap { position: relative; }
+  .tap::before {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes shimmer { to { transform: translateX(100%); } }
+@keyframes hl-sweep {
+  0% { background-size: 0% 100%; }
+  25% { background-size: 100% 100%; background-position: left; }
+  70% { background-size: 100% 100%; opacity: 1; }
+  100% { background-size: 100% 100%; background-color: transparent; background-image: none; }
+}
+
+/* View transitions: the chosen need's lens carries into the listing (continuity) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+  animation-timing-function: var(--ease-glide);
+}
+::view-transition-group(need-lens),
+::view-transition-group(need-title) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-settle);
+}
+::view-transition-old(need-lens),
+::view-transition-new(need-lens) {
+  height: 100%;
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Eye chart focus pull (home hero) */
+.chart-soft { filter: blur(3.5px); opacity: 0.75; }
+.chart-sharp { clip-path: circle(var(--lr) at var(--lx) var(--ly)); background: var(--c-surface); }
+@media (prefers-reduced-motion: reduce) {
+  .chart-soft { filter: none; opacity: 1; }
+  .chart-sharp, .chart-lens { display: none; }
+}
+::view-transition-group(frame-hero) {
+  animation-duration: 480ms;
+  animation-timing-function: var(--ease-settle);
+}

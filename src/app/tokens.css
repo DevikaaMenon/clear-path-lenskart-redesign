@@ -1,0 +1,129 @@
+/*
+ * Clear Path design tokens. Documented in docs/design-system.md.
+ * Contrast (checked numerically, see docs/design-system.md):
+ *   ink on paper 15.1:1 · muted on paper 6.2:1 · accent on paper 5.6:1
+ *   signal on paper 5.1:1 · line-strong on paper 3.6:1 (UI boundaries)
+ */
+:root {
+  /* Colour: surfaces */
+  --c-paper: #f4f1e8; /* page background, warm optician's paper */
+  --c-surface: #fffefb; /* raised surfaces: cards, inputs, sheets */
+  --c-sunk: #eae5d8; /* recessed areas: wells, skeletons, table stripes */
+
+  /* Colour: content */
+  --c-ink: #0f1d2b; /* primary text, primary buttons */
+  --c-ink-2: #1d2f40; /* hover state of ink surfaces */
+  --c-muted: #4f5b67; /* secondary text */
+  --c-line: #d9d2c2; /* decorative hairlines (not relied on for meaning) */
+  --c-line-strong: #857d6c; /* input and control boundaries (3:1 on paper) */
+
+  /* Colour: brand and semantic */
+  --c-accent: #0b6b63; /* lens teal: links, selected states, primary accents */
+  --c-accent-ink: #ffffff; /* text on accent */
+  --c-accent-soft: #d5ebe7; /* selected backgrounds */
+  --c-signal: #b83a1a; /* vermilion: small active marks, counts */
+  --c-highlight: #f5df6e; /* lensmeter yellow: changed-value highlight (background only) */
+  --c-success: #1b7340;
+  --c-success-soft: #dcefe2;
+  --c-warning: #8a5300;
+  --c-warning-soft: #f7ead0;
+  --c-danger: #b42318;
+  --c-danger-soft: #f9e0dc;
+  --c-focus: #0f1d2b; /* focus ring on light surfaces (15:1) */
+
+  /* Typography (font families are injected by next/font as --font-*-src) */
+  --font-display: var(--font-display-src), "Georgia", serif;
+  --font-text: var(--font-text-src), system-ui, sans-serif;
+  --font-mono: var(--font-mono-src), ui-monospace, monospace;
+
+  /* Radii: rectilinear by default; roundness signals "lens-like" things */
+  --r-xs: 2px; /* inputs, buttons */
+  --r-sm: 6px; /* chips' inner marks, small tags */
+  --r-md: 14px; /* sheets and drawers (top corners only) */
+  --r-lens: 999px; /* pills, rings, lens slots */
+
+  /* Hairlines */
+  --hair: 1px;
+  --rule: 2px;
+
+  /* Motion */
+  --dur-micro: 120ms; /* hover, press, toggle */
+  --dur-ui: 240ms; /* chips, accordions, drawers, value changes */
+  --dur-page: 480ms; /* route and shared-element transitions */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1); /* things arriving and resting */
+  --ease-glide: cubic-bezier(0.65, 0, 0.35, 1); /* things moving from A to B */
+  --ease-click: cubic-bezier(0.34, 1.56, 0.64, 1); /* physical response to a press (small overshoot) */
+  --ease-leave: cubic-bezier(0.4, 0, 1, 1); /* things leaving */
+  --stagger: 40ms;
+
+  /* Layout grid */
+  --margin: 16px;
+  --gutter: 12px;
+  --cols: 4;
+  --header-h: 64px;
+}
+
+@media (min-width: 52.125em) {
+  :root {
+    --margin: 40px;
+    --gutter: 16px;
+    --cols: 8;
+    --header-h: 72px;
+  }
+}
+
+@media (min-width: 90em) {
+  :root {
+    --margin: 80px;
+    --gutter: 16px;
+    --cols: 12;
+  }
+}
+
+/* Dark ink sections (footer, hero band) redefine the tokens they use */
+.theme-ink {
+  --c-paper: #0f1d2b;
+  --c-surface: #172a3c;
+  --c-sunk: #0a1520;
+  --c-ink: #f4f1e8;
+  --c-ink-2: #ffffff;
+  --c-muted: #a9b4bf;
+  --c-line: #2c4054;
+  --c-line-strong: #6f8193;
+  --c-accent: #5fc4b8;
+  --c-accent-ink: #0f1d2b;
+  --c-accent-soft: #163c3d;
+  --c-focus: #f5df6e;
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+
+/* "Larger text" mode: all type is rem-based, so this scales the whole UI */
+html[data-text="large"] {
+  font-size: 112.5%; /* 18px base */
+}
+/* With larger text the full desktop navigation needs more room: below 1600px
+   the header collapses to the menu drawer instead of overflowing. */
+@media (max-width: 99.99em) {
+  html[data-text="large"] [data-desktop-nav],
+  html[data-text="large"] [data-mega] { display: none !important; }
+  html[data-text="large"] [data-menu-button] { display: inline-grid !important; }
+}
+
+/* Reduced motion: CSS transitions/animations collapse; JS motion checks the same query */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-micro: 1ms;
+    --dur-ui: 1ms;
+    --dur-page: 1ms;
+    --stagger: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

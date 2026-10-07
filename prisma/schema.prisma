@@ -1,0 +1,215 @@
+// Clear Path data model.
+// SQLite for zero-install local use. Kept portable to PostgreSQL:
+// no SQLite-only types; list/object fields are stored as JSON text
+// (on PostgreSQL these can become Json / String[] columns).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            String        @id @default(cuid())
+  canonicalName String        @unique
+  slug          String        @unique
+  modelCode     String        @unique
+  shape         String // round | rectangle | square | cat-eye | aviator | geometric | oval | wayfarer
+  frameType     String // full-rim | half-rim | rimless
+  material      String // acetate | metal | titanium | tr90
+  weightG       Int
+  lensWidthMm   Int // medium-size reference measurements
+  bridgeMm      Int
+  templeMm      Int
+  sizeBand      String // narrow | medium | wide (overall fit feel)
+  audience      String // adult | kids
+  brand         String
+  collection    String
+  colours       String // JSON: [{ name, hex, rim, temple }]
+  basePrice     Int // rupees, frame only
+  tags          String // JSON: string[]
+  needs         String // JSON: string[] of prescription|computer|reading|sun|contacts
+  faceShapes    String // JSON: string[] of face shapes it suits (guidance, not a rule)
+  description   String
+  popularity    Int           @default(0)
+  createdAt     DateTime      @default(now())
+  sizes         ProductSize[]
+  cartItems     CartItem[]
+  wishlist      WishlistItem[]
+}
+
+model ProductSize {
+  id          String  @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label       String // S | M | L
+  lensWidthMm Int
+  bridgeMm    Int
+  templeMm    Int
+  stock       Int
+
+  @@unique([productId, label])
+}
+
+model LensOption {
+  id                   String     @id
+  purpose              String // prescription | computer | reading | sun | zero-power
+  name                 String
+  description          String
+  price                Int
+  needsPrescription    Boolean
+  sortOrder            Int        @default(0)
+  cartItems            CartItem[]
+}
+
+model Coating {
+  id          String     @id
+  name        String
+  description String
+  price       Int
+  sortOrder   Int        @default(0)
+  cartItems   CartItem[]
+}
+
+model Offer {
+  id          String  @id
+  code        String? @unique // null = applied automatically when eligible
+  label       String
+  explanation String
+  rules       String // JSON, see src/lib/pricing.ts OfferRules
+  autoApply   Boolean @default(true)
+  active      Boolean @default(true)
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  ownerKey  String     @unique // anonymous session id or user id
+  offerCode String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+}
+
+model CartItem {
+  id             String        @id @default(cuid())
+  cartId         String
+  cart           Cart          @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product       @relation(fields: [productId], references: [id])
+  size           String
+  colour         String
+  purpose        String
+  lensOptionId   String
+  lensOption     LensOption    @relation(fields: [lensOptionId], references: [id])
+  coatingId      String?
+  coating        Coating?      @relation(fields: [coatingId], references: [id])
+  prescriptionId String?
+  prescription   Prescription? @relation(fields: [prescriptionId], references: [id])
+  quantity       Int           @default(1)
+  createdAt      DateTime      @default(now())
+}
+
+model Prescription {
+  id        String     @id @default(cuid())
+  ownerKey  String
+  mode      String // upload | manual | later
+  values    String? // JSON of validated values (never logged)
+  fileRef   String? // file name inside UPLOAD_DIR, never a public path
+  validated Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  cartItems CartItem[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  number         String      @unique
+  idempotencyKey String      @unique
+  ownerKey       String
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id])
+  email          String
+  name           String
+  phone          String
+  address        String // JSON
+  paymentMethod  String
+  status         String // placed | paid | cod-confirmed
+  subtotal       Int
+  discount       Int
+  total          Int
+  offerLabel     String?
+  deliveryFrom   DateTime
+  deliveryTo     DateTime
+  createdAt      DateTime    @default(now())
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String
+  productName    String
+  modelCode      String
+  size           String
+  colour         String
+  purpose        String
+  lensName       String
+  coatingName    String?
+  prescriptionId String?
+  unitPrice      Int
+  quantity       Int
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+  orders       Order[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  ownerKey  String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([ownerKey, productId])
+}
+
+model StoreLocation {
+  id       String           @id
+  name     String
+  city     String
+  area     String
+  address  String
+  hours    String
+  eyeTest  Boolean
+  bookings EyeTestBooking[]
+}
+
+model EyeTestBooking {
+  id        String        @id @default(cuid())
+  storeId   String
+  store     StoreLocation @relation(fields: [storeId], references: [id])
+  name      String
+  phone     String
+  date      String // YYYY-MM-DD
+  slot      String // e.g. 10:30
+  createdAt DateTime      @default(now())
+}
